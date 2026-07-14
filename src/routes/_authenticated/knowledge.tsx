@@ -210,9 +210,15 @@ function KnowledgeHub() {
                 description="Upload documents or complete the interview to add sources."
               />
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {counts.sources} sources indexed. AI processing arrives in Phase 3.
-              </p>
+              <div className="space-y-2 text-sm">
+                <p className="text-muted-foreground">{counts.sources} sources indexed.</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <MiniStat label="Policies" value={counts.policies} />
+                  <MiniStat label="Roles" value={counts.roles} />
+                  <MiniStat label="Processes" value={counts.processes} />
+                  <MiniStat label="Approvals" value={counts.approvals} />
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
