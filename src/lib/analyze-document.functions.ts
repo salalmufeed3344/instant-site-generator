@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { qwenChat, QwenError } from "@/lib/qwen.server";
+import { qwenChat, QwenError, QwenAccessDeniedError } from "@/lib/qwen.server";
 import { extractText, chunkText } from "@/lib/text-extraction.server";
 import {
   validateKnowledge,
@@ -304,6 +304,7 @@ export const analyzeDocument = createServerFn({ method: "POST" })
       let tokens = 0;
       let modelUsed = "";
       const stages = ["Extracting policies", "Mapping workflows", "Building knowledge"];
+      let fatalError: string | null = null;
       for (let i = 0; i < chunks.length; i++) {
         const stage = stages[Math.min(i, stages.length - 1)];
         await setProgress(30 + Math.round(((i + 1) / chunks.length) * 55), stage);
@@ -312,6 +313,12 @@ export const analyzeDocument = createServerFn({ method: "POST" })
           partials.push(part);
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);
+          // Access denied is fatal: retrying more chunks won't help.
+          if (e instanceof QwenAccessDeniedError) {
+            fatalError = msg;
+            await log("error", "extract", msg);
+            break;
+          }
           warnings.push(`Chunk ${i + 1}: ${msg}`);
           await log("warn", "extract", `Chunk ${i + 1} failed: ${msg}`);
         }
@@ -322,11 +329,19 @@ export const analyzeDocument = createServerFn({ method: "POST" })
       await setProgress(90, "Finalizing results");
       await persistKnowledge(supabase, doc.organization_id, doc.id, merged);
 
+      const finalError = fatalError
+        ? fatalError
+        : partials.length
+          ? null
+          : warnings[0]
+            ? `Analysis failed: ${warnings[0]}`
+            : "All chunks failed to extract";
+
       await supabase
         .from("document_analysis")
         .update({
-          status: partials.length ? "completed" : "failed",
-          stage: partials.length ? "Complete" : "Failed",
+          status: partials.length && !fatalError ? "completed" : "failed",
+          stage: partials.length && !fatalError ? "Complete" : "Failed",
           progress: 100,
           summary: merged.summary,
           confidence: merged.confidence,
@@ -334,7 +349,7 @@ export const analyzeDocument = createServerFn({ method: "POST" })
           tokens_used: tokens || null,
           warnings,
           result: merged as unknown as Record<string, unknown>,
-          error: partials.length ? null : "All chunks failed to extract",
+          error: finalError,
         })
         .eq("id", analysisId);
 

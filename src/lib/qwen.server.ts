@@ -4,7 +4,15 @@
 const QWEN_ENDPOINT =
   process.env.QWEN_BASE_URL ??
   "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions";
-const DEFAULT_MODEL = process.env.QWEN_MODEL ?? "qwen-plus";
+// qwen-turbo is available on the free tier for most DashScope accounts.
+// qwen-plus / qwen-max require an active paid subscription and will return
+// HTTP 403 AccessDenied.Unpurchased on accounts without one.
+const DEFAULT_MODEL = process.env.QWEN_MODEL ?? "qwen-turbo";
+// Fallback chain used when the primary model returns AccessDenied.Unpurchased.
+const FALLBACK_MODELS = (process.env.QWEN_FALLBACK_MODELS ?? "qwen-turbo,qwen-flash")
+  .split(",")
+  .map((m) => m.trim())
+  .filter(Boolean);
 const DEFAULT_TIMEOUT_MS = 60_000;
 
 export type QwenMessage = {
@@ -47,23 +55,34 @@ async function sleep(ms: number) {
   await new Promise((r) => setTimeout(r, ms));
 }
 
-export async function qwenChat(
+export class QwenAccessDeniedError extends QwenError {
+  constructor(
+    message: string,
+    readonly model: string,
+    readonly rawBody: string,
+  ) {
+    super(message, 403, false);
+    this.name = "QwenAccessDeniedError";
+  }
+}
+
+function isUnpurchasedBody(body: string): boolean {
+  return /AccessDenied\.Unpurchased|Model.*not.*(purchas|activat|subscri)/i.test(body);
+}
+
+async function qwenChatOnce(
+  model: string,
   messages: QwenMessage[],
-  opts: QwenChatOptions = {},
+  opts: QwenChatOptions,
 ): Promise<QwenChatResult> {
   const {
-    model = DEFAULT_MODEL,
     temperature = 0.2,
     jsonMode = false,
     timeoutMs = DEFAULT_TIMEOUT_MS,
     maxRetries = 3,
   } = opts;
 
-  const body: Record<string, unknown> = {
-    model,
-    messages,
-    temperature,
-  };
+  const body: Record<string, unknown> = { model, messages, temperature };
   if (jsonMode) body.response_format = { type: "json_object" };
 
   let lastErr: unknown;
@@ -82,6 +101,24 @@ export async function qwenChat(
       });
       clearTimeout(timer);
 
+      // Structured log: no key exposure.
+      console.log(
+        `[qwen] endpoint=${QWEN_ENDPOINT} model=${model} status=${res.status} attempt=${attempt + 1}`,
+      );
+
+      if (res.status === 403) {
+        const text = await res.text().catch(() => "");
+        if (isUnpurchasedBody(text)) {
+          throw new QwenAccessDeniedError(
+            `Qwen model "${model}" is not enabled on this account (403 AccessDenied.Unpurchased). ` +
+              `Activate the model in the DashScope console or switch QWEN_MODEL to a model your account owns.`,
+            model,
+            text.slice(0, 500),
+          );
+        }
+        throw new QwenError(`Qwen 403: ${text.slice(0, 300)}`, 403, false);
+      }
+
       if (res.status === 429 || res.status >= 500) {
         const text = await res.text().catch(() => "");
         lastErr = new QwenError(
@@ -97,11 +134,7 @@ export async function qwenChat(
       }
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        throw new QwenError(
-          `Qwen ${res.status}: ${text.slice(0, 300)}`,
-          res.status,
-          false,
-        );
+        throw new QwenError(`Qwen ${res.status}: ${text.slice(0, 300)}`, res.status, false);
       }
 
       const json = (await res.json()) as {
@@ -125,6 +158,32 @@ export async function qwenChat(
   }
   throw lastErr instanceof Error ? lastErr : new QwenError("Qwen request failed");
 }
+
+export async function qwenChat(
+  messages: QwenMessage[],
+  opts: QwenChatOptions = {},
+): Promise<QwenChatResult> {
+  const primary = opts.model ?? DEFAULT_MODEL;
+  const chain = [primary, ...FALLBACK_MODELS.filter((m) => m !== primary)];
+  let lastAccessDenied: QwenAccessDeniedError | undefined;
+  for (const model of chain) {
+    try {
+      return await qwenChatOnce(model, messages, opts);
+    } catch (err) {
+      if (err instanceof QwenAccessDeniedError) {
+        lastAccessDenied = err;
+        console.warn(`[qwen] model "${model}" unavailable on this account, trying next fallback`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw (
+    lastAccessDenied ??
+    new QwenError("No Qwen model in the fallback chain is available on this account", 403, false)
+  );
+}
+
 
 // Health check
 export async function qwenHealthCheck(): Promise<{ ok: boolean; model: string; error?: string }> {
