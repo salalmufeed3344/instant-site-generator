@@ -254,6 +254,55 @@ function KnowledgeHub() {
         </Card>
       </section>
 
+      <section>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-base">Documents</CardTitle>
+              <CardDescription>Click a document to view analysis and extracted knowledge.</CardDescription>
+            </div>
+            <Badge variant="secondary">{counts.docs}</Badge>
+          </CardHeader>
+          <CardContent>
+            {documents.length === 0 ? (
+              <EmptyState
+                icon={BookOpen}
+                title="No documents yet"
+                description="Upload files to build your organization's knowledge base."
+              />
+            ) : (
+              <ul className="divide-y divide-border">
+                {documents.map((d) => (
+                  <li key={d.id}>
+                    <Link
+                      to="/documents/$documentId"
+                      params={{ documentId: d.id }}
+                      className="-mx-2 flex items-center justify-between gap-4 rounded px-2 py-2.5 hover:bg-muted/40"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-foreground">{d.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(d.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      {d.status === "running" ? (
+                        <Badge variant="default">Analyzing {d.progress ?? 0}%</Badge>
+                      ) : d.status === "completed" ? (
+                        <Badge variant="secondary">Ready</Badge>
+                      ) : d.status === "failed" ? (
+                        <Badge variant="destructive">Failed</Badge>
+                      ) : (
+                        <Badge variant="outline">Not analyzed</Badge>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
       <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
