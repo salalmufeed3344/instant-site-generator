@@ -167,6 +167,7 @@ export function AppTopbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </header>
   );
 }
