@@ -169,20 +169,55 @@ function OnboardingWizard() {
   }
 
   async function handleStep1Next() {
-    if (!name.trim()) {
-      toast.error("Organization name is required");
+    const trimmed = name.trim();
+    if (!trimmed) {
+      toast.error("Organization name is required", {
+        description: "Enter a name to continue setting up your workspace.",
+      });
       return;
     }
     setSaving(true);
+    const isUpdate = Boolean(orgId);
+    const pending = toast.loading(
+      isUpdate ? "Saving workspace details…" : "Creating your workspace…",
+    );
     try {
       await createOrgIfNeeded();
+      toast.success(
+        isUpdate ? "Workspace updated" : `Workspace “${trimmed}” created`,
+        {
+          id: pending,
+          description: isUpdate
+            ? "Your organization details have been saved."
+            : "Next, choose how to teach CortexOS about your company.",
+        },
+      );
       setStep(2);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed");
+      const raw = e instanceof Error ? e.message : String(e);
+      const lower = raw.toLowerCase();
+      let title = "Couldn't create workspace";
+      let description = raw || "Please try again in a moment.";
+      if (lower.includes("not signed in") || lower.includes("jwt")) {
+        title = "You're signed out";
+        description = "Sign in again and retry — your progress is safe.";
+      } else if (lower.includes("row-level security") || lower.includes("permission")) {
+        title = "Permission denied";
+        description =
+          "Your account can't create a workspace right now. Refresh and sign in again, or contact support if this persists.";
+      } else if (lower.includes("duplicate") || lower.includes("unique")) {
+        title = "Name already in use";
+        description = "Pick a different organization name and try again.";
+      } else if (lower.includes("network") || lower.includes("fetch")) {
+        title = "Network issue";
+        description = "Check your connection and try again.";
+      }
+      toast.error(title, { id: pending, description });
     } finally {
       setSaving(false);
     }
   }
+
 
   async function pickMethod(m: Method) {
     setMethod(m);
