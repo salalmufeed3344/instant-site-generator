@@ -94,10 +94,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Transform company knowledge into intelligent AI teams for documents, workflows, and decisions.",
+          "CortexOS is an enterprise AI platform that transforms company knowledge into intelligent AI teams for documents, workflows, and decisions.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "CortexOS — Build Your AI Organization" },
+      { name: "twitter:description", content: "CortexOS is an enterprise AI platform that transforms company knowledge into intelligent AI teams for documents, workflows, and decisions." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cb5a9c9e-4f7c-4a78-a41d-937716b92142/id-preview-d6b8c4af--2f4b6830-3c11-4049-945f-9c123a2356e2.lovable.app-1784018666854.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cb5a9c9e-4f7c-4a78-a41d-937716b92142/id-preview-d6b8c4af--2f4b6830-3c11-4049-945f-9c123a2356e2.lovable.app-1784018666854.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
