@@ -350,13 +350,12 @@ export const runTask = createServerFn({ method: "POST" })
 
       // 4. Execute each department in order
       const executions: Array<{
-        department: RoutedDept;
+        department: RoutedDepartment;
         response: string;
         confidence: number;
         durationMs: number;
       }> = [];
 
-      type RoutedDept = (typeof chosen)[number];
       for (let i = 0; i < chosen.length; i++) {
         const r = chosen[i];
         const dept = (depts as AiDepartmentRow[]).find((d) => d.id === r.department_id);
