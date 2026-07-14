@@ -937,7 +937,7 @@ export type Database = {
           contact_email: string | null
           country: string | null
           created_at: string
-          created_by: string | null
+          created_by: string
           description: string | null
           id: string
           industry: string | null
@@ -956,7 +956,7 @@ export type Database = {
           contact_email?: string | null
           country?: string | null
           created_at?: string
-          created_by?: string | null
+          created_by?: string
           description?: string | null
           id?: string
           industry?: string | null
@@ -975,7 +975,7 @@ export type Database = {
           contact_email?: string | null
           country?: string | null
           created_at?: string
-          created_by?: string | null
+          created_by?: string
           description?: string | null
           id?: string
           industry?: string | null
