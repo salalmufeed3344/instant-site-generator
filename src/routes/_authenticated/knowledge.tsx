@@ -38,7 +38,11 @@ type Org = {
 function KnowledgeHub() {
   const [loading, setLoading] = useState(true);
   const [org, setOrg] = useState<Org | null>(null);
-  const [counts, setCounts] = useState({ docs: 0, depts: 0, sources: 0, answers: 0 });
+  const [counts, setCounts] = useState({
+    docs: 0, depts: 0, sources: 0, answers: 0,
+    policies: 0, roles: 0, processes: 0, approvals: 0,
+  });
+  const [documents, setDocuments] = useState<Array<{ id: string; title: string; created_at: string; status?: string; progress?: number }>>([]);
   const [uploadOpen, setUploadOpen] = useState(false);
 
   async function load() {
@@ -54,12 +58,18 @@ function KnowledgeHub() {
       setLoading(false);
       return;
     }
-    const [orgRes, docs, depts, sources, answers] = await Promise.all([
+    const [orgRes, docs, depts, sources, answers, policies, roles, processes, approvals, docList, analyses] = await Promise.all([
       supabase.from("organizations").select("id,name,industry,company_size,description,mission,vision").eq("id", orgId).single(),
       supabase.from("documents").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
       supabase.from("departments").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
       supabase.from("knowledge_sources").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
       supabase.from("interview_answers").select("id", { count: "exact", head: true }).eq("organization_id", orgId).not("answer", "is", null),
+      supabase.from("policies").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("roles").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("processes").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("approval_chains").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("documents").select("id,title,created_at").eq("organization_id", orgId).order("created_at", { ascending: false }).limit(10),
+      supabase.from("document_analysis").select("document_id,status,progress").eq("organization_id", orgId),
     ]);
     setOrg(orgRes.data as Org);
     setCounts({
@@ -67,7 +77,22 @@ function KnowledgeHub() {
       depts: depts.count ?? 0,
       sources: sources.count ?? 0,
       answers: answers.count ?? 0,
+      policies: policies.count ?? 0,
+      roles: roles.count ?? 0,
+      processes: processes.count ?? 0,
+      approvals: approvals.count ?? 0,
     });
+    const aMap = new Map<string, { status: string; progress: number }>();
+    for (const a of (analyses.data ?? []) as Array<{ document_id: string; status: string; progress: number }>) {
+      aMap.set(a.document_id, { status: a.status, progress: a.progress });
+    }
+    setDocuments(
+      ((docList.data ?? []) as Array<{ id: string; title: string; created_at: string }>).map((d) => ({
+        ...d,
+        status: aMap.get(d.id)?.status,
+        progress: aMap.get(d.id)?.progress,
+      })),
+    );
     setLoading(false);
   }
 
