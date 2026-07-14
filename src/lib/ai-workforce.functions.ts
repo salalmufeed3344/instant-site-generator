@@ -10,6 +10,7 @@ import {
   routeTask,
   runDepartmentStep,
   type AiDepartmentRow,
+  type RoutedDepartment,
 } from "@/lib/orchestration.server";
 
 const DEFAULT_DEPARTMENTS: Array<{
