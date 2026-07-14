@@ -24,6 +24,7 @@ import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAiTasksRouteImport } from './routes/_authenticated/ai-tasks'
 import { Route as AuthenticatedAiDepartmentsRouteImport } from './routes/_authenticated/ai-departments'
 import { Route as AuthenticatedDocumentsDocumentIdRouteImport } from './routes/_authenticated/documents.$documentId'
 import { Route as AuthenticatedAiDepartmentsSlugRouteImport } from './routes/_authenticated/ai-departments.$slug'
@@ -104,6 +105,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAiTasksRoute = AuthenticatedAiTasksRouteImport.update({
+  id: '/ai-tasks',
+  path: '/ai-tasks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAiDepartmentsRoute =
   AuthenticatedAiDepartmentsRouteImport.update({
     id: '/ai-departments',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
+  '/ai-tasks': typeof AuthenticatedAiTasksRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
+  '/ai-tasks': typeof AuthenticatedAiTasksRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
+  '/_authenticated/ai-tasks': typeof AuthenticatedAiTasksRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/ai-departments'
+    | '/ai-tasks'
     | '/dashboard'
     | '/departments'
     | '/knowledge'
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/ai-departments'
+    | '/ai-tasks'
     | '/dashboard'
     | '/departments'
     | '/knowledge'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/_authenticated/ai-departments'
+    | '/_authenticated/ai-tasks'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/knowledge'
@@ -358,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ai-tasks': {
+      id: '/_authenticated/ai-tasks'
+      path: '/ai-tasks'
+      fullPath: '/ai-tasks'
+      preLoaderRoute: typeof AuthenticatedAiTasksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/ai-departments': {
       id: '/_authenticated/ai-departments'
       path: '/ai-departments'
@@ -398,6 +417,7 @@ const AuthenticatedAiDepartmentsRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAiDepartmentsRoute: typeof AuthenticatedAiDepartmentsRouteWithChildren
+  AuthenticatedAiTasksRoute: typeof AuthenticatedAiTasksRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
@@ -413,6 +433,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAiDepartmentsRoute: AuthenticatedAiDepartmentsRouteWithChildren,
+  AuthenticatedAiTasksRoute: AuthenticatedAiTasksRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
