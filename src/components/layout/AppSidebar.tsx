@@ -38,7 +38,7 @@ const workspaceNav = [
   { title: "Departments", url: "/departments", icon: Users },
   { title: "Templates", url: "/templates", icon: Sparkles },
   { title: "Workflows", url: "/workflows", icon: Workflow },
-  { title: "Memory", url: "/memory", icon: Brain },
+  { title: "Memory Center", url: "/memory", icon: Brain },
   { title: "Tasks", url: "/tasks", icon: ListChecks },
 ] as const;
 
