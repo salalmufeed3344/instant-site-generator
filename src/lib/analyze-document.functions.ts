@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { qwenChat, QwenError } from "@/lib/qwen.server";
+import { qwenChat, QwenError, QwenAccessDeniedError } from "@/lib/qwen.server";
 import { extractText, chunkText } from "@/lib/text-extraction.server";
 import {
   validateKnowledge,
