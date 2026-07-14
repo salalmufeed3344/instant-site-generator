@@ -92,7 +92,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border">
         <div className="px-2 py-1 text-[11px] text-muted-foreground">
-          CortexOS · Phase 1
+          CortexOS · Phase 2
         </div>
       </SidebarFooter>
     </Sidebar>
