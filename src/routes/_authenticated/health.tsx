@@ -27,7 +27,7 @@ function useHealth() {
 
       const [docs, analyzed, depts, pols, procs, mems, tasks] = await Promise.all([
         supabase.from("documents").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
-        supabase.from("documents").select("id", { count: "exact", head: true }).eq("organization_id", orgId).eq("status", "analyzed"),
+        supabase.from("documents").select("id", { count: "exact", head: true }).eq("organization_id", orgId).eq("upload_status", "analyzed"),
         supabase.from("ai_departments").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
         supabase.from("policies").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
         supabase.from("processes").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
