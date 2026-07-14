@@ -27,8 +27,9 @@ import { Logo } from "@/components/brand/Logo";
 
 const workspaceNav = [
   { title: "Home", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Knowledge", url: "/knowledge", icon: BookOpen },
+  { title: "Knowledge Hub", url: "/knowledge", icon: BookOpen },
   { title: "Departments", url: "/departments", icon: Users },
+  { title: "Templates", url: "/templates", icon: Sparkles },
   { title: "Workflows", url: "/workflows", icon: Workflow },
   { title: "Memory", url: "/memory", icon: Brain },
   { title: "Tasks", url: "/tasks", icon: ListChecks },
