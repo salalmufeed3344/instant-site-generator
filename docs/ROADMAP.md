@@ -43,16 +43,27 @@
 - Human approval framework (UI + records; no external side effects)
 - Reusable server-side services: `routeTask`, `runDepartmentStep`, `aggregateResponses`, `calculateConfidence`, `checkApproval`, `buildDepartmentPrompt`
 
-## Phase 5 — Organizational Memory (next)
+## Phase 5 — Organizational Memory Engine ✅
 
-- Persistent long-term memory per department
-- Vector search / RAG over `knowledge_sources`
-- Cross-task learning and citation grounding
-- Editable department prompts and tools
+- New tables: `memory_items`, `memory_relationships`, `decision_history`, `memory_tags`, `search_history`, `timeline_events`, `knowledge_metrics` (all org-scoped, RLS + GRANTs)
+- Memory Center at `/memory` with Recent / Important / Pinned / Departments / Decisions / Timeline / Graph / Insights tabs
+- Scoped search across policies, departments, processes, decisions, and documents (`searchMemory`)
+- Interactive relationship graph with node-selection highlighting
+- Decisions are now recorded automatically by every AI task, linked to referenced policies
+- Insight dashboard: memory health, completeness, category breakdown, active departments, recent activity
+- Timeline log filterable by department
+- New services in `src/lib/memory.server.ts`: `upsertMemory`, `linkMemories`, `recordTimelineEvent`, `recordDecision`, `computeInsights`
+- Docs: `docs/MEMORY_ENGINE.md`
 
-## Phase 5 — Enterprise Rollout
+## Phase 6 — Workflow Automation & Human Approval (next)
+
+- Multi-step workflows built from processes
+- Approval chains wired to real reviewer users
+- Scheduled and event-driven triggers
+- Audit log surface built on `timeline_events`
+
+## Phase 7 — Enterprise Rollout
 
 - SSO / SAML
-- Audit log
 - RBAC via `user_roles` + `app_role` enum
 - Billing and plan management
