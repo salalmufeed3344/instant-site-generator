@@ -44,7 +44,7 @@ function Settings() {
       if (!userData.user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("organization_id, organizations(id, name, industry, size)")
+        .select("organization_id, organizations(id, name, industry, company_size)")
         .eq("id", userData.user.id)
         .maybeSingle();
       const org = (data as any)?.organizations;
@@ -52,7 +52,7 @@ function Settings() {
         setOrgId(org.id);
         setOrgName(org.name ?? "");
         setIndustry(org.industry ?? "");
-        setSize(org.size ?? "");
+        setSize(org.company_size ?? "");
       }
     })();
     const stored = typeof window !== "undefined" ? localStorage.getItem("cortex-theme") : null;

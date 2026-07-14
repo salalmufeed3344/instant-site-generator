@@ -31,7 +31,7 @@ function useOverviewData() {
       if (!userData.user) throw new Error("Not authenticated");
       const { data: profile } = await supabase
         .from("profiles")
-        .select("organization_id, organizations(name, industry, size)")
+        .select("organization_id, organizations(name, industry, company_size)")
         .eq("id", userData.user.id)
         .maybeSingle();
       const orgId = profile?.organization_id;
@@ -111,7 +111,7 @@ function OverviewPage() {
             </h1>
             <p className="mt-1 max-w-2xl text-muted-foreground">
               {data.org?.industry ? `${data.org.industry} · ` : ""}
-              {data.org?.size ?? "Enterprise"} · Powered by CortexOS Intelligence
+              {data.org?.company_size ?? "Enterprise"} · Powered by CortexOS Intelligence
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button asChild size="sm">
