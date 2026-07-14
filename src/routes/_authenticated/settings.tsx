@@ -74,7 +74,7 @@ function Settings() {
     setSaving(true);
     const { error } = await supabase
       .from("organizations")
-      .update({ name: orgName, industry, size })
+      .update({ name: orgName, industry, company_size: size })
       .eq("id", orgId);
     setSaving(false);
     if (error) toast.error("Couldn't save changes. Please try again.");
