@@ -8,6 +8,7 @@ import {
   ListChecks,
   Settings,
   UserCircle,
+  Sparkles,
 } from "lucide-react";
 
 import {
