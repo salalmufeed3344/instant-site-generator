@@ -14,13 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      documents: {
+        Row: {
+          created_at: string
+          file_url: string | null
+          id: string
+          organization_id: string
+          title: string
+          upload_status: string
+        }
+        Insert: {
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          organization_id: string
+          title: string
+          upload_status?: string
+        }
+        Update: {
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          organization_id?: string
+          title?: string
+          upload_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          company_size: string | null
+          created_at: string
+          id: string
+          industry: string | null
+          name: string
+        }
+        Insert: {
+          company_size?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          name: string
+        }
+        Update: {
+          company_size?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          organization_id: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          organization_id?: string | null
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          organization_id?: string | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_user_organization_id: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
