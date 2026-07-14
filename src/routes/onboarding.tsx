@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -325,11 +325,20 @@ function OnboardingWizard() {
   return (
     <div className="flex min-h-screen items-start justify-center bg-muted/20 px-4 py-10 sm:py-16">
       <div className="w-full max-w-3xl">
-        <div className="mb-6 flex items-center justify-between">
-          <Logo />
-          <span className="text-xs text-muted-foreground">
-            Step {step} of {totalSteps}
-          </span>
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <Link to="/" aria-label="Go to home" className="shrink-0">
+            <Logo />
+          </Link>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/">
+                <ArrowLeft className="h-4 w-4" /> Home
+              </Link>
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              Step {step} of {totalSteps}
+            </span>
+          </div>
         </div>
         <Progress value={progress} className="mb-8 h-1.5" />
 
