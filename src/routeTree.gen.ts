@@ -26,6 +26,7 @@ import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAiDepartmentsRouteImport } from './routes/_authenticated/ai-departments'
 import { Route as AuthenticatedDocumentsDocumentIdRouteImport } from './routes/_authenticated/documents.$documentId'
+import { Route as AuthenticatedAiDepartmentsSlugRouteImport } from './routes/_authenticated/ai-departments.$slug'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -115,13 +116,19 @@ const AuthenticatedDocumentsDocumentIdRoute =
     path: '/documents/$documentId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAiDepartmentsSlugRoute =
+  AuthenticatedAiDepartmentsSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedAiDepartmentsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/ai-departments': typeof AuthenticatedAiDepartmentsRoute
+  '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
+  '/ai-departments/$slug': typeof AuthenticatedAiDepartmentsSlugRoute
   '/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRoutesByTo {
@@ -139,7 +147,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/ai-departments': typeof AuthenticatedAiDepartmentsRoute
+  '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -150,6 +158,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
+  '/ai-departments/$slug': typeof AuthenticatedAiDepartmentsSlugRoute
   '/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRoutesById {
@@ -159,7 +168,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/_authenticated/ai-departments': typeof AuthenticatedAiDepartmentsRoute
+  '/_authenticated/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -170,6 +179,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/templates': typeof AuthenticatedTemplatesRoute
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRoute
+  '/_authenticated/ai-departments/$slug': typeof AuthenticatedAiDepartmentsSlugRoute
   '/_authenticated/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRouteTypes {
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/templates'
     | '/workflows'
+    | '/ai-departments/$slug'
     | '/documents/$documentId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/templates'
     | '/workflows'
+    | '/ai-departments/$slug'
     | '/documents/$documentId'
   id:
     | '__root__'
@@ -227,6 +239,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks'
     | '/_authenticated/templates'
     | '/_authenticated/workflows'
+    | '/_authenticated/ai-departments/$slug'
     | '/_authenticated/documents/$documentId'
   fileRoutesById: FileRoutesById
 }
@@ -359,11 +372,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDocumentsDocumentIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ai-departments/$slug': {
+      id: '/_authenticated/ai-departments/$slug'
+      path: '/$slug'
+      fullPath: '/ai-departments/$slug'
+      preLoaderRoute: typeof AuthenticatedAiDepartmentsSlugRouteImport
+      parentRoute: typeof AuthenticatedAiDepartmentsRoute
+    }
   }
 }
 
+interface AuthenticatedAiDepartmentsRouteChildren {
+  AuthenticatedAiDepartmentsSlugRoute: typeof AuthenticatedAiDepartmentsSlugRoute
+}
+
+const AuthenticatedAiDepartmentsRouteChildren: AuthenticatedAiDepartmentsRouteChildren =
+  {
+    AuthenticatedAiDepartmentsSlugRoute: AuthenticatedAiDepartmentsSlugRoute,
+  }
+
+const AuthenticatedAiDepartmentsRouteWithChildren =
+  AuthenticatedAiDepartmentsRoute._addFileChildren(
+    AuthenticatedAiDepartmentsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAiDepartmentsRoute: typeof AuthenticatedAiDepartmentsRoute
+  AuthenticatedAiDepartmentsRoute: typeof AuthenticatedAiDepartmentsRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
@@ -378,7 +412,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAiDepartmentsRoute: AuthenticatedAiDepartmentsRoute,
+  AuthenticatedAiDepartmentsRoute: AuthenticatedAiDepartmentsRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
