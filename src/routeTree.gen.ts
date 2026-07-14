@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RandomRouteImport } from './routes/random'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -38,6 +39,11 @@ import { Route as AuthenticatedAiDepartmentsSlugRouteImport } from './routes/_au
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RandomRoute = RandomRouteImport.update({
+  id: '/random',
+  path: '/random',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/help': typeof HelpRoute
   '/onboarding': typeof OnboardingRoute
+  '/random': typeof RandomRoute
   '/reset-password': typeof ResetPasswordRoute
   '/activity': typeof AuthenticatedActivityRoute
   '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
@@ -198,6 +205,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/help': typeof HelpRoute
   '/onboarding': typeof OnboardingRoute
+  '/random': typeof RandomRoute
   '/reset-password': typeof ResetPasswordRoute
   '/activity': typeof AuthenticatedActivityRoute
   '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/help': typeof HelpRoute
   '/onboarding': typeof OnboardingRoute
+  '/random': typeof RandomRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
@@ -254,6 +263,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/help'
     | '/onboarding'
+    | '/random'
     | '/reset-password'
     | '/activity'
     | '/ai-departments'
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/help'
     | '/onboarding'
+    | '/random'
     | '/reset-password'
     | '/activity'
     | '/ai-departments'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/help'
     | '/onboarding'
+    | '/random'
     | '/reset-password'
     | '/_authenticated/activity'
     | '/_authenticated/ai-departments'
@@ -335,6 +347,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HelpRoute: typeof HelpRoute
   OnboardingRoute: typeof OnboardingRoute
+  RandomRoute: typeof RandomRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/random': {
+      id: '/random'
+      path: '/random'
+      fullPath: '/random'
+      preLoaderRoute: typeof RandomRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -592,6 +612,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   HelpRoute: HelpRoute,
   OnboardingRoute: OnboardingRoute,
+  RandomRoute: RandomRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
