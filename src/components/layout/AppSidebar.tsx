@@ -10,6 +10,8 @@ import {
   UserCircle,
   Sparkles,
   Network,
+  Bot,
+  History,
 } from "lucide-react";
 
 import {

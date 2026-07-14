@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWorkflowsRouteImport } from './routes/_authenticated/workflows'
 import { Route as AuthenticatedTemplatesRouteImport } from './routes/_authenticated/templates'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
+import { Route as AuthenticatedTaskHistoryRouteImport } from './routes/_authenticated/task-history'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOrganizationGraphRouteImport } from './routes/_authenticated/organization-graph'
@@ -69,6 +70,12 @@ const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTaskHistoryRoute =
+  AuthenticatedTaskHistoryRouteImport.update({
+    id: '/task-history',
+    path: '/task-history',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -150,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/task-history': typeof AuthenticatedTaskHistoryRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
@@ -171,6 +179,7 @@ export interface FileRoutesByTo {
   '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/task-history': typeof AuthenticatedTaskHistoryRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
@@ -194,6 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/task-history': typeof AuthenticatedTaskHistoryRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/templates': typeof AuthenticatedTemplatesRoute
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRoute
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/organization-graph'
     | '/profile'
     | '/settings'
+    | '/task-history'
     | '/tasks'
     | '/templates'
     | '/workflows'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '/organization-graph'
     | '/profile'
     | '/settings'
+    | '/task-history'
     | '/tasks'
     | '/templates'
     | '/workflows'
@@ -260,6 +272,7 @@ export interface FileRouteTypes {
     | '/_authenticated/organization-graph'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
+    | '/_authenticated/task-history'
     | '/_authenticated/tasks'
     | '/_authenticated/templates'
     | '/_authenticated/workflows'
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof AuthenticatedTasksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/task-history': {
+      id: '/_authenticated/task-history'
+      path: '/task-history'
+      fullPath: '/task-history'
+      preLoaderRoute: typeof AuthenticatedTaskHistoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -456,6 +476,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrganizationGraphRoute: typeof AuthenticatedOrganizationGraphRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTaskHistoryRoute: typeof AuthenticatedTaskHistoryRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTemplatesRoute: typeof AuthenticatedTemplatesRoute
   AuthenticatedWorkflowsRoute: typeof AuthenticatedWorkflowsRoute
@@ -472,6 +493,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrganizationGraphRoute: AuthenticatedOrganizationGraphRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTaskHistoryRoute: AuthenticatedTaskHistoryRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTemplatesRoute: AuthenticatedTemplatesRoute,
   AuthenticatedWorkflowsRoute: AuthenticatedWorkflowsRoute,
