@@ -766,7 +766,7 @@ function InsightsView({
             <p className="text-sm text-muted-foreground">No activity yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
-              {insights.recent_activity.map((r) => {
+              {(insights.recent_activity as unknown[]).map((r) => {
                 const row = r as {
                   id: string;
                   event_type: string;
