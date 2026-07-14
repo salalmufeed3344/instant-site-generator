@@ -431,7 +431,58 @@ export const runTask = createServerFn({ method: "POST" })
         });
       }
 
-      await addStep("Finalizing", "Task complete.", 6);
+      // 8. Organizational Memory: record decision + timeline + memory item
+      await addStep("Finalizing", "Saving organizational memory...", 6);
+      try {
+        const { recordDecision, recordTimelineEvent, upsertMemory, linkMemories } = await import(
+          "@/lib/memory.server"
+        );
+        const decisionId = await recordDecision(supabase, orgId, {
+          task_id: taskId,
+          title: data.title,
+          decision: finalResponse,
+          reasoning: `Routed to: ${chosen.map((c) => c.department_name).join(", ")}`,
+          referenced_policy_ids: (policies ?? []).slice(0, 5).map((p: any) => p.id),
+          departments_involved: chosen.map((c) => c.department_name),
+          confidence: finalConfidence,
+          status: approval.requires ? "pending_approval" : "recorded",
+        });
+        const memId = await upsertMemory(supabase, {
+          organization_id: orgId,
+          category: "decision",
+          title: data.title,
+          summary: finalResponse.slice(0, 240),
+          content: finalResponse,
+          source_type: "decision",
+          source_id: decisionId,
+          importance: Math.max(0.4, finalConfidence),
+          confidence: finalConfidence,
+          tags: ["decision", ...chosen.map((c) => c.department_name)],
+        });
+        // Link to referenced policies
+        for (const p of (policies ?? []).slice(0, 5)) {
+          const { data: polMem } = await supabase
+            .from("memory_items")
+            .select("id")
+            .eq("organization_id", orgId)
+            .eq("source_type", "policy")
+            .eq("source_id", p.id)
+            .maybeSingle();
+          if (polMem?.id) await linkMemories(supabase, orgId, memId, polMem.id, "references");
+        }
+        await recordTimelineEvent(supabase, orgId, {
+          event_type: "task_completed",
+          title: data.title,
+          description: chosen.map((c) => c.department_name).join(" → "),
+          ref_type: "task",
+          ref_id: taskId,
+          department_name: chosen[0]?.department_name ?? null,
+        });
+      } catch {
+        // Memory recording is non-fatal
+      }
+
+      await addStep("Finalizing", "Task complete.", 7);
 
       await supabase
         .from("tasks")
