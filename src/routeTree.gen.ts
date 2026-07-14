@@ -20,13 +20,16 @@ import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedTaskHistoryRouteImport } from './routes/_authenticated/task-history'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedOverviewRouteImport } from './routes/_authenticated/overview'
 import { Route as AuthenticatedOrganizationGraphRouteImport } from './routes/_authenticated/organization-graph'
 import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated/memory'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
+import { Route as AuthenticatedHealthRouteImport } from './routes/_authenticated/health'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAiTasksRouteImport } from './routes/_authenticated/ai-tasks'
 import { Route as AuthenticatedAiDepartmentsRouteImport } from './routes/_authenticated/ai-departments'
+import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedDocumentsDocumentIdRouteImport } from './routes/_authenticated/documents.$documentId'
 import { Route as AuthenticatedAiTasksTaskIdRouteImport } from './routes/_authenticated/ai-tasks.$taskId'
 import { Route as AuthenticatedAiDepartmentsSlugRouteImport } from './routes/_authenticated/ai-departments.$slug'
@@ -86,6 +89,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOverviewRoute = AuthenticatedOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOrganizationGraphRoute =
   AuthenticatedOrganizationGraphRouteImport.update({
     id: '/organization-graph',
@@ -100,6 +108,11 @@ const AuthenticatedMemoryRoute = AuthenticatedMemoryRouteImport.update({
 const AuthenticatedKnowledgeRoute = AuthenticatedKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHealthRoute = AuthenticatedHealthRouteImport.update({
+  id: '/health',
+  path: '/health',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDepartmentsRoute =
@@ -124,6 +137,11 @@ const AuthenticatedAiDepartmentsRoute =
     path: '/ai-departments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDocumentsDocumentIdRoute =
   AuthenticatedDocumentsDocumentIdRouteImport.update({
     id: '/documents/$documentId',
@@ -148,13 +166,16 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/activity': typeof AuthenticatedActivityRoute
   '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
   '/ai-tasks': typeof AuthenticatedAiTasksRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
+  '/health': typeof AuthenticatedHealthRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/memory': typeof AuthenticatedMemoryRoute
   '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
+  '/overview': typeof AuthenticatedOverviewRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/task-history': typeof AuthenticatedTaskHistoryRoute
@@ -170,13 +191,16 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/activity': typeof AuthenticatedActivityRoute
   '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
   '/ai-tasks': typeof AuthenticatedAiTasksRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
+  '/health': typeof AuthenticatedHealthRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/memory': typeof AuthenticatedMemoryRoute
   '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
+  '/overview': typeof AuthenticatedOverviewRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/task-history': typeof AuthenticatedTaskHistoryRoute
@@ -194,13 +218,16 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
   '/_authenticated/ai-tasks': typeof AuthenticatedAiTasksRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
+  '/_authenticated/health': typeof AuthenticatedHealthRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/memory': typeof AuthenticatedMemoryRoute
   '/_authenticated/organization-graph': typeof AuthenticatedOrganizationGraphRoute
+  '/_authenticated/overview': typeof AuthenticatedOverviewRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/task-history': typeof AuthenticatedTaskHistoryRoute
@@ -218,13 +245,16 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/reset-password'
+    | '/activity'
     | '/ai-departments'
     | '/ai-tasks'
     | '/dashboard'
     | '/departments'
+    | '/health'
     | '/knowledge'
     | '/memory'
     | '/organization-graph'
+    | '/overview'
     | '/profile'
     | '/settings'
     | '/task-history'
@@ -240,13 +270,16 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/reset-password'
+    | '/activity'
     | '/ai-departments'
     | '/ai-tasks'
     | '/dashboard'
     | '/departments'
+    | '/health'
     | '/knowledge'
     | '/memory'
     | '/organization-graph'
+    | '/overview'
     | '/profile'
     | '/settings'
     | '/task-history'
@@ -263,13 +296,16 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/reset-password'
+    | '/_authenticated/activity'
     | '/_authenticated/ai-departments'
     | '/_authenticated/ai-tasks'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
+    | '/_authenticated/health'
     | '/_authenticated/knowledge'
     | '/_authenticated/memory'
     | '/_authenticated/organization-graph'
+    | '/_authenticated/overview'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
     | '/_authenticated/task-history'
@@ -368,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/overview': {
+      id: '/_authenticated/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof AuthenticatedOverviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/organization-graph': {
       id: '/_authenticated/organization-graph'
       path: '/organization-graph'
@@ -387,6 +430,13 @@ declare module '@tanstack/react-router' {
       path: '/knowledge'
       fullPath: '/knowledge'
       preLoaderRoute: typeof AuthenticatedKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/health': {
+      id: '/_authenticated/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof AuthenticatedHealthRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/departments': {
@@ -415,6 +465,13 @@ declare module '@tanstack/react-router' {
       path: '/ai-departments'
       fullPath: '/ai-departments'
       preLoaderRoute: typeof AuthenticatedAiDepartmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/activity': {
+      id: '/_authenticated/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AuthenticatedActivityRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/documents/$documentId': {
@@ -467,13 +524,16 @@ const AuthenticatedAiTasksRouteWithChildren =
   AuthenticatedAiTasksRoute._addFileChildren(AuthenticatedAiTasksRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedAiDepartmentsRoute: typeof AuthenticatedAiDepartmentsRouteWithChildren
   AuthenticatedAiTasksRoute: typeof AuthenticatedAiTasksRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
+  AuthenticatedHealthRoute: typeof AuthenticatedHealthRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedMemoryRoute: typeof AuthenticatedMemoryRoute
   AuthenticatedOrganizationGraphRoute: typeof AuthenticatedOrganizationGraphRoute
+  AuthenticatedOverviewRoute: typeof AuthenticatedOverviewRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTaskHistoryRoute: typeof AuthenticatedTaskHistoryRoute
@@ -484,13 +544,16 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedAiDepartmentsRoute: AuthenticatedAiDepartmentsRouteWithChildren,
   AuthenticatedAiTasksRoute: AuthenticatedAiTasksRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
+  AuthenticatedHealthRoute: AuthenticatedHealthRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedMemoryRoute: AuthenticatedMemoryRoute,
   AuthenticatedOrganizationGraphRoute: AuthenticatedOrganizationGraphRoute,
+  AuthenticatedOverviewRoute: AuthenticatedOverviewRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTaskHistoryRoute: AuthenticatedTaskHistoryRoute,
