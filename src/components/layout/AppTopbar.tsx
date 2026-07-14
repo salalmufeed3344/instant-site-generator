@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +23,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { CommandPalette, useCommandPaletteHotkey } from "@/components/search/CommandPalette";
 
 function humanize(segment: string) {
   return segment.charAt(0).toUpperCase() + segment.slice(1);
