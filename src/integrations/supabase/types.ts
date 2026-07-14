@@ -232,6 +232,69 @@ export type Database = {
           },
         ]
       }
+      decision_history: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          decided_at: string
+          decision: string
+          departments_involved: string[]
+          id: string
+          organization_id: string
+          reasoning: string | null
+          referenced_policy_ids: string[]
+          status: string
+          task_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          decided_at?: string
+          decision: string
+          departments_involved?: string[]
+          id?: string
+          organization_id: string
+          reasoning?: string | null
+          referenced_policy_ids?: string[]
+          status?: string
+          task_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          decided_at?: string
+          decision?: string
+          departments_involved?: string[]
+          id?: string
+          organization_id?: string
+          reasoning?: string | null
+          referenced_policy_ids?: string[]
+          status?: string
+          task_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_history_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       department_configs: {
         Row: {
           allowed_actions: string[]
@@ -535,6 +598,47 @@ export type Database = {
           },
         ]
       }
+      knowledge_metrics: {
+        Row: {
+          created_at: string
+          id: string
+          metric_key: string
+          metric_meta: Json
+          metric_value: number
+          organization_id: string
+          recorded_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metric_key: string
+          metric_meta?: Json
+          metric_value?: number
+          organization_id: string
+          recorded_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metric_key?: string
+          metric_meta?: Json
+          metric_value?: number
+          organization_id?: string
+          recorded_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_metrics_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       knowledge_relationships: {
         Row: {
           created_at: string
@@ -627,6 +731,161 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "knowledge_sources_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_items: {
+        Row: {
+          category: string
+          confidence: number
+          content: string | null
+          created_at: string
+          id: string
+          importance: number
+          last_referenced_at: string | null
+          organization_id: string
+          pinned: boolean
+          reference_count: number
+          source_id: string | null
+          source_type: string | null
+          summary: string | null
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          confidence?: number
+          content?: string | null
+          created_at?: string
+          id?: string
+          importance?: number
+          last_referenced_at?: string | null
+          organization_id: string
+          pinned?: boolean
+          reference_count?: number
+          source_id?: string | null
+          source_type?: string | null
+          summary?: string | null
+          tags?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          confidence?: number
+          content?: string | null
+          created_at?: string
+          id?: string
+          importance?: number
+          last_referenced_at?: string | null
+          organization_id?: string
+          pinned?: boolean
+          reference_count?: number
+          source_id?: string | null
+          source_type?: string | null
+          summary?: string | null
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_relationships: {
+        Row: {
+          created_at: string
+          from_memory_id: string
+          id: string
+          organization_id: string
+          relationship_type: string
+          to_memory_id: string
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          from_memory_id: string
+          id?: string
+          organization_id: string
+          relationship_type?: string
+          to_memory_id: string
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          from_memory_id?: string
+          id?: string
+          organization_id?: string
+          relationship_type?: string
+          to_memory_id?: string
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_relationships_from_memory_id_fkey"
+            columns: ["from_memory_id"]
+            isOneToOne: false
+            referencedRelation: "memory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memory_relationships_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "memory_relationships_to_memory_id_fkey"
+            columns: ["to_memory_id"]
+            isOneToOne: false
+            referencedRelation: "memory_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_tags: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          organization_id: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_tags_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -933,6 +1192,47 @@ export type Database = {
           },
         ]
       }
+      search_history: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          query: string
+          result_count: number
+          scope: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          query: string
+          result_count?: number
+          scope?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          query?: string
+          result_count?: number
+          scope?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "search_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_executions: {
         Row: {
           confidence: number | null
@@ -1148,6 +1448,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tasks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      timeline_events: {
+        Row: {
+          created_at: string
+          department_name: string | null
+          description: string | null
+          event_type: string
+          id: string
+          occurred_at: string
+          organization_id: string
+          ref_id: string | null
+          ref_type: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_name?: string | null
+          description?: string | null
+          event_type: string
+          id?: string
+          occurred_at?: string
+          organization_id: string
+          ref_id?: string | null
+          ref_type?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_name?: string | null
+          description?: string | null
+          event_type?: string
+          id?: string
+          occurred_at?: string
+          organization_id?: string
+          ref_id?: string | null
+          ref_type?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timeline_events_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
