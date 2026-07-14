@@ -21,16 +21,25 @@
 - `company-documents` Storage bucket, org-scoped RLS
 - New tables: `departments`, `interview_answers`, `knowledge_sources`, `organization_templates`
 
-## Phase 3 — Qwen Intelligence (next)
+## Phase 3 — Qwen Intelligence ✅ (this release)
 
-- Document parsing pipeline (chunking, embeddings)
-- Vector search over `knowledge_sources`
-- Qwen Cloud inference for reasoning over org knowledge
-- Agent authoring & execution
-- Department-scoped memory
-- Workflow automation
+- Qwen Cloud (DashScope OpenAI-compatible) integration behind server functions
+- Document analysis pipeline: read → extract text → chunk → Qwen → validate → merge → persist
+- Structured knowledge tables: `document_analysis`, `policies`, `roles`, `processes`, `approval_chains`, `knowledge_entities`, `knowledge_relationships`, `analysis_logs`
+- Automatic re-population of `departments` from extracted knowledge
+- New Document Insights page (`/documents/$id`) with stage progress and re-analyze
+- New Organization Graph page (`/organization-graph`) with SVG visualization of extracted entities
+- Knowledge Hub upgraded with per-document status and policy/role/process counters
+- Retries, timeouts, and per-chunk error recovery
 
-## Phase 4 — Enterprise Rollout
+## Phase 4 — AI Workforce (next)
+
+- Vector search over `knowledge_sources` for RAG
+- AI Departments backed by extracted roles/policies
+- Agent authoring and execution runtime
+- Workflow automation and task delegation
+
+## Phase 5 — Enterprise Rollout
 
 - SSO / SAML
 - Audit log

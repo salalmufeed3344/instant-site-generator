@@ -38,7 +38,11 @@ type Org = {
 function KnowledgeHub() {
   const [loading, setLoading] = useState(true);
   const [org, setOrg] = useState<Org | null>(null);
-  const [counts, setCounts] = useState({ docs: 0, depts: 0, sources: 0, answers: 0 });
+  const [counts, setCounts] = useState({
+    docs: 0, depts: 0, sources: 0, answers: 0,
+    policies: 0, roles: 0, processes: 0, approvals: 0,
+  });
+  const [documents, setDocuments] = useState<Array<{ id: string; title: string; created_at: string; status?: string; progress?: number }>>([]);
   const [uploadOpen, setUploadOpen] = useState(false);
 
   async function load() {
@@ -54,12 +58,18 @@ function KnowledgeHub() {
       setLoading(false);
       return;
     }
-    const [orgRes, docs, depts, sources, answers] = await Promise.all([
+    const [orgRes, docs, depts, sources, answers, policies, roles, processes, approvals, docList, analyses] = await Promise.all([
       supabase.from("organizations").select("id,name,industry,company_size,description,mission,vision").eq("id", orgId).single(),
       supabase.from("documents").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
       supabase.from("departments").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
       supabase.from("knowledge_sources").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
       supabase.from("interview_answers").select("id", { count: "exact", head: true }).eq("organization_id", orgId).not("answer", "is", null),
+      supabase.from("policies").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("roles").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("processes").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("approval_chains").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
+      supabase.from("documents").select("id,title,created_at").eq("organization_id", orgId).order("created_at", { ascending: false }).limit(10),
+      supabase.from("document_analysis").select("document_id,status,progress").eq("organization_id", orgId),
     ]);
     setOrg(orgRes.data as Org);
     setCounts({
@@ -67,7 +77,22 @@ function KnowledgeHub() {
       depts: depts.count ?? 0,
       sources: sources.count ?? 0,
       answers: answers.count ?? 0,
+      policies: policies.count ?? 0,
+      roles: roles.count ?? 0,
+      processes: processes.count ?? 0,
+      approvals: approvals.count ?? 0,
     });
+    const aMap = new Map<string, { status: string; progress: number }>();
+    for (const a of (analyses.data ?? []) as Array<{ document_id: string; status: string; progress: number }>) {
+      aMap.set(a.document_id, { status: a.status, progress: a.progress });
+    }
+    setDocuments(
+      ((docList.data ?? []) as Array<{ id: string; title: string; created_at: string }>).map((d) => ({
+        ...d,
+        status: aMap.get(d.id)?.status,
+        progress: aMap.get(d.id)?.progress,
+      })),
+    );
     setLoading(false);
   }
 
@@ -185,9 +210,15 @@ function KnowledgeHub() {
                 description="Upload documents or complete the interview to add sources."
               />
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {counts.sources} sources indexed. AI processing arrives in Phase 3.
-              </p>
+              <div className="space-y-2 text-sm">
+                <p className="text-muted-foreground">{counts.sources} sources indexed.</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <MiniStat label="Policies" value={counts.policies} />
+                  <MiniStat label="Roles" value={counts.roles} />
+                  <MiniStat label="Processes" value={counts.processes} />
+                  <MiniStat label="Approvals" value={counts.approvals} />
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -218,6 +249,55 @@ function KnowledgeHub() {
               <p className="text-sm text-muted-foreground">
                 {counts.depts} departments configured.
               </p>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-base">Documents</CardTitle>
+              <CardDescription>Click a document to view analysis and extracted knowledge.</CardDescription>
+            </div>
+            <Badge variant="secondary">{counts.docs}</Badge>
+          </CardHeader>
+          <CardContent>
+            {documents.length === 0 ? (
+              <EmptyState
+                icon={BookOpen}
+                title="No documents yet"
+                description="Upload files to build your organization's knowledge base."
+              />
+            ) : (
+              <ul className="divide-y divide-border">
+                {documents.map((d) => (
+                  <li key={d.id}>
+                    <Link
+                      to="/documents/$documentId"
+                      params={{ documentId: d.id }}
+                      className="-mx-2 flex items-center justify-between gap-4 rounded px-2 py-2.5 hover:bg-muted/40"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-foreground">{d.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(d.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      {d.status === "running" ? (
+                        <Badge variant="default">Analyzing {d.progress ?? 0}%</Badge>
+                      ) : d.status === "completed" ? (
+                        <Badge variant="secondary">Ready</Badge>
+                      ) : d.status === "failed" ? (
+                        <Badge variant="destructive">Failed</Badge>
+                      ) : (
+                        <Badge variant="outline">Not analyzed</Badge>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
           </CardContent>
         </Card>
@@ -266,5 +346,14 @@ function ChecklistRow({ done, label }: { done: boolean; label: string }) {
       </span>
       <span className={done ? "text-foreground" : "text-muted-foreground"}>{label}</span>
     </li>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="rounded-md border border-border bg-card px-3 py-2">
+      <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="text-lg font-semibold text-foreground">{value}</p>
+    </div>
   );
 }

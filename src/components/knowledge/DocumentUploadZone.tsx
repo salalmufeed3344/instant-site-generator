@@ -1,9 +1,11 @@
 import { useCallback, useState } from "react";
 import { UploadCloud, X, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { analyzeDocument } from "@/lib/analyze-document.functions";
 
 const ACCEPTED = [
   "application/pdf",
@@ -32,6 +34,7 @@ type Props = {
 export function DocumentUploadZone({ organizationId, onUploaded }: Props) {
   const [dragging, setDragging] = useState(false);
   const [progress, setProgress] = useState<Record<string, number>>({});
+  const analyze = useServerFn(analyzeDocument);
 
   const upload = useCallback(
     async (files: File[]) => {
@@ -95,11 +98,18 @@ export function DocumentUploadZone({ organizationId, onUploaded }: Props) {
           delete n[key];
           return n;
         });
-        toast.success(`${file.name} uploaded`);
+        toast.success(`${file.name} uploaded. Analyzing…`);
         onUploaded?.(row as UploadedDoc);
+        // Fire and forget: kick off Qwen analysis
+        void analyze({ data: { documentId: row.id } })
+          .then((res) => {
+            if (res?.ok) toast.success(`${file.name}: knowledge extracted`);
+            else toast.warning(`${file.name}: analysis finished with warnings`);
+          })
+          .catch((e) => toast.error(`Analysis failed: ${e instanceof Error ? e.message : String(e)}`));
       }
     },
-    [organizationId, onUploaded],
+    [organizationId, onUploaded, analyze],
   );
 
   return (

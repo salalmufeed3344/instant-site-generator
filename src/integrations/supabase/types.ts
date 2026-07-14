@@ -14,6 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      analysis_logs: {
+        Row: {
+          analysis_id: string | null
+          created_at: string
+          id: string
+          level: string
+          message: string
+          metadata: Json
+          organization_id: string
+          stage: string | null
+          updated_at: string
+        }
+        Insert: {
+          analysis_id?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          message: string
+          metadata?: Json
+          organization_id: string
+          stage?: string | null
+          updated_at?: string
+        }
+        Update: {
+          analysis_id?: string | null
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string
+          metadata?: Json
+          organization_id?: string
+          stage?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analysis_logs_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "document_analysis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analysis_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approval_chains: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          source_document_id: string | null
+          steps: Json
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          source_document_id?: string | null
+          steps?: Json
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          source_document_id?: string | null
+          steps?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_chains_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_chains_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           created_at: string
@@ -42,6 +144,75 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "departments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_analysis: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          document_id: string
+          error: string | null
+          id: string
+          model: string | null
+          organization_id: string
+          progress: number
+          result: Json | null
+          stage: string | null
+          status: string
+          summary: string | null
+          tokens_used: number | null
+          updated_at: string
+          warnings: Json
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          document_id: string
+          error?: string | null
+          id?: string
+          model?: string | null
+          organization_id: string
+          progress?: number
+          result?: Json | null
+          stage?: string | null
+          status?: string
+          summary?: string | null
+          tokens_used?: number | null
+          updated_at?: string
+          warnings?: Json
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          document_id?: string
+          error?: string | null
+          id?: string
+          model?: string | null
+          organization_id?: string
+          progress?: number
+          result?: Json | null
+          stage?: string | null
+          status?: string
+          summary?: string | null
+          tokens_used?: number | null
+          updated_at?: string
+          warnings?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_analysis_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_analysis_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -130,6 +301,115 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_entities: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          description: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+          name: string
+          organization_id: string
+          source_document_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+          name: string
+          organization_id: string
+          source_document_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+          name?: string
+          organization_id?: string
+          source_document_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_entities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_entities_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_relationships: {
+        Row: {
+          created_at: string
+          from_entity_id: string
+          id: string
+          metadata: Json
+          organization_id: string
+          relationship_type: string
+          to_entity_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          from_entity_id: string
+          id?: string
+          metadata?: Json
+          organization_id: string
+          relationship_type: string
+          to_entity_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          from_entity_id?: string
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          relationship_type?: string
+          to_entity_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_relationships_from_entity_id_fkey"
+            columns: ["from_entity_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_relationships_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "knowledge_relationships_to_entity_id_fkey"
+            columns: ["to_entity_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_entities"
             referencedColumns: ["id"]
           },
         ]
@@ -273,6 +553,117 @@ export type Database = {
         }
         Relationships: []
       }
+      policies: {
+        Row: {
+          category: string | null
+          confidence: number | null
+          created_at: string
+          description: string | null
+          id: string
+          organization_id: string
+          rules: Json
+          source_document_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          organization_id: string
+          rules?: Json
+          source_document_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          organization_id?: string
+          rules?: Json
+          source_document_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "policies_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processes: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          outputs: Json
+          source_document_id: string | null
+          steps: Json
+          triggers: Json
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          outputs?: Json
+          source_document_id?: string | null
+          steps?: Json
+          triggers?: Json
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          outputs?: Json
+          source_document_id?: string | null
+          steps?: Json
+          triggers?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processes_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -301,6 +692,67 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          department_id: string | null
+          description: string | null
+          id: string
+          organization_id: string
+          responsibilities: Json
+          source_document_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          organization_id: string
+          responsibilities?: Json
+          source_document_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          department_id?: string | null
+          description?: string | null
+          id?: string
+          organization_id?: string
+          responsibilities?: Json
+          source_document_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roles_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roles_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
             referencedColumns: ["id"]
           },
         ]

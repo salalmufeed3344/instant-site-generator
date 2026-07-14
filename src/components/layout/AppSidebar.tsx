@@ -9,6 +9,7 @@ import {
   Settings,
   UserCircle,
   Sparkles,
+  Network,
 } from "lucide-react";
 
 import {
@@ -28,6 +29,7 @@ import { Logo } from "@/components/brand/Logo";
 const workspaceNav = [
   { title: "Home", url: "/dashboard", icon: LayoutDashboard },
   { title: "Knowledge Hub", url: "/knowledge", icon: BookOpen },
+  { title: "Organization Graph", url: "/organization-graph", icon: Network },
   { title: "Departments", url: "/departments", icon: Users },
   { title: "Templates", url: "/templates", icon: Sparkles },
   { title: "Workflows", url: "/workflows", icon: Workflow },
@@ -92,7 +94,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border">
         <div className="px-2 py-1 text-[11px] text-muted-foreground">
-          CortexOS · Phase 2
+          CortexOS · Phase 3
         </div>
       </SidebarFooter>
     </Sidebar>
