@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_departments: {
+        Row: {
+          confidence: number
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          knowledge_source_ids: string[]
+          name: string
+          organization_id: string
+          policy_ids: string[]
+          purpose: string | null
+          responsibilities: string[]
+          slug: string
+          status: string
+          updated_at: string
+          workflows: string[]
+        }
+        Insert: {
+          confidence?: number
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          knowledge_source_ids?: string[]
+          name: string
+          organization_id: string
+          policy_ids?: string[]
+          purpose?: string | null
+          responsibilities?: string[]
+          slug: string
+          status?: string
+          updated_at?: string
+          workflows?: string[]
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          knowledge_source_ids?: string[]
+          name?: string
+          organization_id?: string
+          policy_ids?: string[]
+          purpose?: string | null
+          responsibilities?: string[]
+          slug?: string
+          status?: string
+          updated_at?: string
+          workflows?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_departments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analysis_logs: {
         Row: {
           analysis_id: string | null
@@ -112,6 +174,120 @@ export type Database = {
             columns: ["source_document_id"]
             isOneToOne: false
             referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approvals: {
+        Row: {
+          approver_role: string | null
+          approver_user_id: string | null
+          created_at: string
+          decided_at: string | null
+          id: string
+          organization_id: string
+          reason: string | null
+          status: string
+          task_id: string
+          updated_at: string
+        }
+        Insert: {
+          approver_role?: string | null
+          approver_user_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          organization_id: string
+          reason?: string | null
+          status?: string
+          task_id: string
+          updated_at?: string
+        }
+        Update: {
+          approver_role?: string | null
+          approver_user_id?: string | null
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          organization_id?: string
+          reason?: string | null
+          status?: string
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvals_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvals_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      department_configs: {
+        Row: {
+          allowed_actions: string[]
+          allowed_knowledge_sources: string[]
+          approval_requirements: Json
+          available_tools: string[]
+          created_at: string
+          department_id: string
+          escalation_rules: Json
+          id: string
+          model_config: Json
+          organization_id: string
+          system_prompt: string
+          updated_at: string
+        }
+        Insert: {
+          allowed_actions?: string[]
+          allowed_knowledge_sources?: string[]
+          approval_requirements?: Json
+          available_tools?: string[]
+          created_at?: string
+          department_id: string
+          escalation_rules?: Json
+          id?: string
+          model_config?: Json
+          organization_id: string
+          system_prompt?: string
+          updated_at?: string
+        }
+        Update: {
+          allowed_actions?: string[]
+          allowed_knowledge_sources?: string[]
+          approval_requirements?: Json
+          available_tools?: string[]
+          created_at?: string
+          department_id?: string
+          escalation_rules?: Json
+          id?: string
+          model_config?: Json
+          organization_id?: string
+          system_prompt?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "department_configs_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: true
+            referencedRelation: "ai_departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "department_configs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -753,6 +929,228 @@ export type Database = {
             columns: ["source_document_id"]
             isOneToOne: false
             referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_executions: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          department_id: string | null
+          department_name: string | null
+          duration_ms: number | null
+          id: string
+          order_index: number
+          organization_id: string
+          reason: string | null
+          response: string | null
+          task_id: string
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          department_id?: string | null
+          department_name?: string | null
+          duration_ms?: number | null
+          id?: string
+          order_index?: number
+          organization_id: string
+          reason?: string | null
+          response?: string | null
+          task_id: string
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          department_id?: string | null
+          department_name?: string | null
+          duration_ms?: number | null
+          id?: string
+          order_index?: number
+          organization_id?: string
+          reason?: string | null
+          response?: string | null
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_executions_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "ai_departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_executions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_executions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_sources: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          snippet: string | null
+          source_id: string | null
+          source_type: string
+          task_id: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          snippet?: string | null
+          source_id?: string | null
+          source_type: string
+          task_id: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          snippet?: string | null
+          source_id?: string | null
+          source_type?: string
+          task_id?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_sources_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_sources_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_steps: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          order_index: number
+          organization_id: string
+          stage: string
+          status: string
+          task_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          order_index?: number
+          organization_id: string
+          stage: string
+          status?: string
+          task_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          order_index?: number
+          organization_id?: string
+          stage?: string
+          status?: string
+          task_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_steps_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_steps_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          approval_status: string | null
+          confidence: number | null
+          created_at: string
+          created_by: string | null
+          final_response: string | null
+          id: string
+          organization_id: string
+          request: string
+          requires_approval: boolean
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approval_status?: string | null
+          confidence?: number | null
+          created_at?: string
+          created_by?: string | null
+          final_response?: string | null
+          id?: string
+          organization_id: string
+          request: string
+          requires_approval?: boolean
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approval_status?: string | null
+          confidence?: number | null
+          created_at?: string
+          created_by?: string | null
+          final_response?: string | null
+          id?: string
+          organization_id?: string
+          request?: string
+          requires_approval?: boolean
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]

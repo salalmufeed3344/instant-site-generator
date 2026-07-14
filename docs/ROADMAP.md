@@ -32,12 +32,23 @@
 - Knowledge Hub upgraded with per-document status and policy/role/process counters
 - Retries, timeouts, and per-chunk error recovery
 
-## Phase 4 — AI Workforce (next)
+## Phase 4 — AI Workforce & Agent Orchestration ✅
 
-- Vector search over `knowledge_sources` for RAG
-- AI Departments backed by extracted roles/policies
-- Agent authoring and execution runtime
-- Workflow automation and task delegation
+- `ai_departments`, `department_configs`, `tasks`, `task_executions`, `task_steps`, `task_sources`, `approvals` tables with per-org RLS
+- 8 seedable default departments (HR, Finance, Sales, Marketing, Support, Ops, IT, Legal) plus manual department creation
+- Task router that picks 1–3 departments using Qwen with a keyword-heuristic fallback
+- Multi-department orchestration: per-department response + Qwen-based aggregation into a final answer
+- Transparent execution timeline (Understanding → Selecting → Gathering → Consulting → Building → Finalizing)
+- Task History with filtering + Task Detail with department chain, sources, and confidence
+- Human approval framework (UI + records; no external side effects)
+- Reusable server-side services: `routeTask`, `runDepartmentStep`, `aggregateResponses`, `calculateConfidence`, `checkApproval`, `buildDepartmentPrompt`
+
+## Phase 5 — Organizational Memory (next)
+
+- Persistent long-term memory per department
+- Vector search / RAG over `knowledge_sources`
+- Cross-task learning and citation grounding
+- Editable department prompts and tools
 
 ## Phase 5 — Enterprise Rollout
 

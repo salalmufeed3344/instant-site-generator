@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWorkflowsRouteImport } from './routes/_authenticated/workflows'
 import { Route as AuthenticatedTemplatesRouteImport } from './routes/_authenticated/templates'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
+import { Route as AuthenticatedTaskHistoryRouteImport } from './routes/_authenticated/task-history'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOrganizationGraphRouteImport } from './routes/_authenticated/organization-graph'
@@ -24,7 +25,11 @@ import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAiTasksRouteImport } from './routes/_authenticated/ai-tasks'
+import { Route as AuthenticatedAiDepartmentsRouteImport } from './routes/_authenticated/ai-departments'
 import { Route as AuthenticatedDocumentsDocumentIdRouteImport } from './routes/_authenticated/documents.$documentId'
+import { Route as AuthenticatedAiTasksTaskIdRouteImport } from './routes/_authenticated/ai-tasks.$taskId'
+import { Route as AuthenticatedAiDepartmentsSlugRouteImport } from './routes/_authenticated/ai-departments.$slug'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -65,6 +70,12 @@ const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTaskHistoryRoute =
+  AuthenticatedTaskHistoryRouteImport.update({
+    id: '/task-history',
+    path: '/task-history',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -102,11 +113,34 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAiTasksRoute = AuthenticatedAiTasksRouteImport.update({
+  id: '/ai-tasks',
+  path: '/ai-tasks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAiDepartmentsRoute =
+  AuthenticatedAiDepartmentsRouteImport.update({
+    id: '/ai-departments',
+    path: '/ai-departments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDocumentsDocumentIdRoute =
   AuthenticatedDocumentsDocumentIdRouteImport.update({
     id: '/documents/$documentId',
     path: '/documents/$documentId',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAiTasksTaskIdRoute =
+  AuthenticatedAiTasksTaskIdRouteImport.update({
+    id: '/$taskId',
+    path: '/$taskId',
+    getParentRoute: () => AuthenticatedAiTasksRoute,
+  } as any)
+const AuthenticatedAiDepartmentsSlugRoute =
+  AuthenticatedAiDepartmentsSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedAiDepartmentsRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -114,6 +148,8 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
+  '/ai-tasks': typeof AuthenticatedAiTasksRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -121,9 +157,12 @@ export interface FileRoutesByFullPath {
   '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/task-history': typeof AuthenticatedTaskHistoryRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
+  '/ai-departments/$slug': typeof AuthenticatedAiDepartmentsSlugRoute
+  '/ai-tasks/$taskId': typeof AuthenticatedAiTasksTaskIdRoute
   '/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRoutesByTo {
@@ -131,6 +170,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
+  '/ai-tasks': typeof AuthenticatedAiTasksRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -138,9 +179,12 @@ export interface FileRoutesByTo {
   '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/task-history': typeof AuthenticatedTaskHistoryRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
+  '/ai-departments/$slug': typeof AuthenticatedAiDepartmentsSlugRoute
+  '/ai-tasks/$taskId': typeof AuthenticatedAiTasksTaskIdRoute
   '/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRoutesById {
@@ -150,6 +194,8 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/ai-departments': typeof AuthenticatedAiDepartmentsRouteWithChildren
+  '/_authenticated/ai-tasks': typeof AuthenticatedAiTasksRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
@@ -157,9 +203,12 @@ export interface FileRoutesById {
   '/_authenticated/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/task-history': typeof AuthenticatedTaskHistoryRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/templates': typeof AuthenticatedTemplatesRoute
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRoute
+  '/_authenticated/ai-departments/$slug': typeof AuthenticatedAiDepartmentsSlugRoute
+  '/_authenticated/ai-tasks/$taskId': typeof AuthenticatedAiTasksTaskIdRoute
   '/_authenticated/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRouteTypes {
@@ -169,6 +218,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/reset-password'
+    | '/ai-departments'
+    | '/ai-tasks'
     | '/dashboard'
     | '/departments'
     | '/knowledge'
@@ -176,9 +227,12 @@ export interface FileRouteTypes {
     | '/organization-graph'
     | '/profile'
     | '/settings'
+    | '/task-history'
     | '/tasks'
     | '/templates'
     | '/workflows'
+    | '/ai-departments/$slug'
+    | '/ai-tasks/$taskId'
     | '/documents/$documentId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -186,6 +240,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/reset-password'
+    | '/ai-departments'
+    | '/ai-tasks'
     | '/dashboard'
     | '/departments'
     | '/knowledge'
@@ -193,9 +249,12 @@ export interface FileRouteTypes {
     | '/organization-graph'
     | '/profile'
     | '/settings'
+    | '/task-history'
     | '/tasks'
     | '/templates'
     | '/workflows'
+    | '/ai-departments/$slug'
+    | '/ai-tasks/$taskId'
     | '/documents/$documentId'
   id:
     | '__root__'
@@ -204,6 +263,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/onboarding'
     | '/reset-password'
+    | '/_authenticated/ai-departments'
+    | '/_authenticated/ai-tasks'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/knowledge'
@@ -211,9 +272,12 @@ export interface FileRouteTypes {
     | '/_authenticated/organization-graph'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
+    | '/_authenticated/task-history'
     | '/_authenticated/tasks'
     | '/_authenticated/templates'
     | '/_authenticated/workflows'
+    | '/_authenticated/ai-departments/$slug'
+    | '/_authenticated/ai-tasks/$taskId'
     | '/_authenticated/documents/$documentId'
   fileRoutesById: FileRoutesById
 }
@@ -283,6 +347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTasksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/task-history': {
+      id: '/_authenticated/task-history'
+      path: '/task-history'
+      fullPath: '/task-history'
+      preLoaderRoute: typeof AuthenticatedTaskHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -332,6 +403,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ai-tasks': {
+      id: '/_authenticated/ai-tasks'
+      path: '/ai-tasks'
+      fullPath: '/ai-tasks'
+      preLoaderRoute: typeof AuthenticatedAiTasksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ai-departments': {
+      id: '/_authenticated/ai-departments'
+      path: '/ai-departments'
+      fullPath: '/ai-departments'
+      preLoaderRoute: typeof AuthenticatedAiDepartmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/documents/$documentId': {
       id: '/_authenticated/documents/$documentId'
       path: '/documents/$documentId'
@@ -339,10 +424,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDocumentsDocumentIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ai-tasks/$taskId': {
+      id: '/_authenticated/ai-tasks/$taskId'
+      path: '/$taskId'
+      fullPath: '/ai-tasks/$taskId'
+      preLoaderRoute: typeof AuthenticatedAiTasksTaskIdRouteImport
+      parentRoute: typeof AuthenticatedAiTasksRoute
+    }
+    '/_authenticated/ai-departments/$slug': {
+      id: '/_authenticated/ai-departments/$slug'
+      path: '/$slug'
+      fullPath: '/ai-departments/$slug'
+      preLoaderRoute: typeof AuthenticatedAiDepartmentsSlugRouteImport
+      parentRoute: typeof AuthenticatedAiDepartmentsRoute
+    }
   }
 }
 
+interface AuthenticatedAiDepartmentsRouteChildren {
+  AuthenticatedAiDepartmentsSlugRoute: typeof AuthenticatedAiDepartmentsSlugRoute
+}
+
+const AuthenticatedAiDepartmentsRouteChildren: AuthenticatedAiDepartmentsRouteChildren =
+  {
+    AuthenticatedAiDepartmentsSlugRoute: AuthenticatedAiDepartmentsSlugRoute,
+  }
+
+const AuthenticatedAiDepartmentsRouteWithChildren =
+  AuthenticatedAiDepartmentsRoute._addFileChildren(
+    AuthenticatedAiDepartmentsRouteChildren,
+  )
+
+interface AuthenticatedAiTasksRouteChildren {
+  AuthenticatedAiTasksTaskIdRoute: typeof AuthenticatedAiTasksTaskIdRoute
+}
+
+const AuthenticatedAiTasksRouteChildren: AuthenticatedAiTasksRouteChildren = {
+  AuthenticatedAiTasksTaskIdRoute: AuthenticatedAiTasksTaskIdRoute,
+}
+
+const AuthenticatedAiTasksRouteWithChildren =
+  AuthenticatedAiTasksRoute._addFileChildren(AuthenticatedAiTasksRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAiDepartmentsRoute: typeof AuthenticatedAiDepartmentsRouteWithChildren
+  AuthenticatedAiTasksRoute: typeof AuthenticatedAiTasksRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
@@ -350,6 +476,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrganizationGraphRoute: typeof AuthenticatedOrganizationGraphRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTaskHistoryRoute: typeof AuthenticatedTaskHistoryRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTemplatesRoute: typeof AuthenticatedTemplatesRoute
   AuthenticatedWorkflowsRoute: typeof AuthenticatedWorkflowsRoute
@@ -357,6 +484,8 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAiDepartmentsRoute: AuthenticatedAiDepartmentsRouteWithChildren,
+  AuthenticatedAiTasksRoute: AuthenticatedAiTasksRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
@@ -364,6 +493,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrganizationGraphRoute: AuthenticatedOrganizationGraphRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTaskHistoryRoute: AuthenticatedTaskHistoryRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTemplatesRoute: AuthenticatedTemplatesRoute,
   AuthenticatedWorkflowsRoute: AuthenticatedWorkflowsRoute,
