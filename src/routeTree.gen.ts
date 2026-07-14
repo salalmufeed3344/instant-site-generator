@@ -19,10 +19,12 @@ import { Route as AuthenticatedTemplatesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedOrganizationGraphRouteImport } from './routes/_authenticated/organization-graph'
 import { Route as AuthenticatedMemoryRouteImport } from './routes/_authenticated/memory'
 import { Route as AuthenticatedKnowledgeRouteImport } from './routes/_authenticated/knowledge'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDocumentsDocumentIdRouteImport } from './routes/_authenticated/documents.$documentId'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -73,6 +75,12 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOrganizationGraphRoute =
+  AuthenticatedOrganizationGraphRouteImport.update({
+    id: '/organization-graph',
+    path: '/organization-graph',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMemoryRoute = AuthenticatedMemoryRouteImport.update({
   id: '/memory',
   path: '/memory',
@@ -94,6 +102,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDocumentsDocumentIdRoute =
+  AuthenticatedDocumentsDocumentIdRouteImport.update({
+    id: '/documents/$documentId',
+    path: '/documents/$documentId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -104,11 +118,13 @@ export interface FileRoutesByFullPath {
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/memory': typeof AuthenticatedMemoryRoute
+  '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
+  '/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -119,11 +135,13 @@ export interface FileRoutesByTo {
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/knowledge': typeof AuthenticatedKnowledgeRoute
   '/memory': typeof AuthenticatedMemoryRoute
+  '/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/workflows': typeof AuthenticatedWorkflowsRoute
+  '/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -136,11 +154,13 @@ export interface FileRoutesById {
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/knowledge': typeof AuthenticatedKnowledgeRoute
   '/_authenticated/memory': typeof AuthenticatedMemoryRoute
+  '/_authenticated/organization-graph': typeof AuthenticatedOrganizationGraphRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/templates': typeof AuthenticatedTemplatesRoute
   '/_authenticated/workflows': typeof AuthenticatedWorkflowsRoute
+  '/_authenticated/documents/$documentId': typeof AuthenticatedDocumentsDocumentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -153,11 +173,13 @@ export interface FileRouteTypes {
     | '/departments'
     | '/knowledge'
     | '/memory'
+    | '/organization-graph'
     | '/profile'
     | '/settings'
     | '/tasks'
     | '/templates'
     | '/workflows'
+    | '/documents/$documentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -168,11 +190,13 @@ export interface FileRouteTypes {
     | '/departments'
     | '/knowledge'
     | '/memory'
+    | '/organization-graph'
     | '/profile'
     | '/settings'
     | '/tasks'
     | '/templates'
     | '/workflows'
+    | '/documents/$documentId'
   id:
     | '__root__'
     | '/'
@@ -184,11 +208,13 @@ export interface FileRouteTypes {
     | '/_authenticated/departments'
     | '/_authenticated/knowledge'
     | '/_authenticated/memory'
+    | '/_authenticated/organization-graph'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
     | '/_authenticated/templates'
     | '/_authenticated/workflows'
+    | '/_authenticated/documents/$documentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -271,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/organization-graph': {
+      id: '/_authenticated/organization-graph'
+      path: '/organization-graph'
+      fullPath: '/organization-graph'
+      preLoaderRoute: typeof AuthenticatedOrganizationGraphRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/memory': {
       id: '/_authenticated/memory'
       path: '/memory'
@@ -299,6 +332,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/documents/$documentId': {
+      id: '/_authenticated/documents/$documentId'
+      path: '/documents/$documentId'
+      fullPath: '/documents/$documentId'
+      preLoaderRoute: typeof AuthenticatedDocumentsDocumentIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -307,11 +347,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedKnowledgeRoute: typeof AuthenticatedKnowledgeRoute
   AuthenticatedMemoryRoute: typeof AuthenticatedMemoryRoute
+  AuthenticatedOrganizationGraphRoute: typeof AuthenticatedOrganizationGraphRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTemplatesRoute: typeof AuthenticatedTemplatesRoute
   AuthenticatedWorkflowsRoute: typeof AuthenticatedWorkflowsRoute
+  AuthenticatedDocumentsDocumentIdRoute: typeof AuthenticatedDocumentsDocumentIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -319,11 +361,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedKnowledgeRoute: AuthenticatedKnowledgeRoute,
   AuthenticatedMemoryRoute: AuthenticatedMemoryRoute,
+  AuthenticatedOrganizationGraphRoute: AuthenticatedOrganizationGraphRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTemplatesRoute: AuthenticatedTemplatesRoute,
   AuthenticatedWorkflowsRoute: AuthenticatedWorkflowsRoute,
+  AuthenticatedDocumentsDocumentIdRoute: AuthenticatedDocumentsDocumentIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
