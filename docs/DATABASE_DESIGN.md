@@ -1,61 +1,40 @@
-# Database Design — Phase 1
+# Database Design — Phase 2
 
-All tables live in the `public` schema. Row-Level Security is enabled on every table.
+All tables live in the `public` schema. RLS is enabled everywhere and scoped by `public.current_user_organization_id()`.
 
-## `organizations`
+## Core tables
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| id | uuid | PK, `gen_random_uuid()` |
-| name | text | required |
-| industry | text | nullable |
-| company_size | text | nullable |
-| created_at | timestamptz | default `now()` |
+### `organizations`
+Phase 1 columns plus (Phase 2): `country`, `timezone`, `logo_url`, `mission`, `vision`, `description`, `website`, `contact_email`, `setup_method`, `setup_completed`, `updated_at`.
 
-**Policies**
-- SELECT: user's organization only.
-- INSERT: any signed-in user.
-- UPDATE: members of the organization.
+### `profiles`
+Unchanged from Phase 1. Links `auth.users` to an `organization_id`.
 
-## `profiles`
+### `documents`
+Phase 1 columns plus (Phase 2): `mime_type`, `file_size`, `storage_path`, `updated_at`. Files live in Storage bucket `company-documents` under `${organization_id}/…`.
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| id | uuid | PK, FK → `auth.users(id)` on delete cascade |
-| organization_id | uuid | FK → `organizations(id)` on delete set null |
-| full_name | text | nullable |
-| role | text | default `'member'` |
-| created_at | timestamptz | default `now()` |
+## Phase 2 tables
 
-**Policies**
-- SELECT: self or same-organization members.
-- INSERT: self only.
-- UPDATE: self only.
+### `departments`
+`name`, `description`. Full CRUD for org members.
 
-**Trigger**
-- `on_auth_user_created` on `auth.users` — auto-creates a profile row on signup, seeded with `full_name` from user metadata.
+### `interview_answers`
+`question_key` (unique per org), `question`, `answer`. Populated by the guided interview.
 
-## `documents`
+### `knowledge_sources`
+`title`, `category` (`document` | `interview` | `template`), `status` (`ready` | `pending` | `archived`), `reference_id`, `metadata` (jsonb).
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| id | uuid | PK |
-| organization_id | uuid | FK → `organizations(id)` on delete cascade |
-| title | text | required |
-| file_url | text | nullable |
-| upload_status | text | default `'pending'` |
-| created_at | timestamptz | default `now()` |
+### `organization_templates`
+`template_key`, `template_name`, `applied_at`. Records which industry templates the org applied.
 
-**Policies**
-All CRUD scoped to `organization_id = current_user_organization_id()`.
+## Helpers & triggers
 
-## Helper functions
+- `public.current_user_organization_id()` — SECURITY DEFINER, used inside every RLS policy.
+- `public.set_updated_at()` — attached via BEFORE UPDATE triggers to all tables with `updated_at`.
+- `public.handle_new_user()` — creates a profile row on `auth.users` insert.
 
-- `public.current_user_organization_id()` — SECURITY DEFINER, returns the caller's organization from `profiles`. Used inside RLS policies.
-- `public.handle_new_user()` — SECURITY DEFINER trigger that creates a profile on `auth.users` insert.
+## Storage
 
-## TODO — Phase 2
-
-- `departments`, `agents`, `workflows`, `memories`, `tasks`, `document_chunks`, `embeddings`
-- `user_roles` table with an `app_role` enum for RBAC
-- Audit log tables
+Bucket: **`company-documents`** (private).
+Files organized as `${organization_id}/${uuid}-${filename}`.
+Storage RLS mirrors the org scope: only members of the folder's organization can list, upload, update, or delete objects.
