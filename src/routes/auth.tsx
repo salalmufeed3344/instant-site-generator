@@ -43,12 +43,18 @@ function AuthPage() {
         toast.success("Welcome back");
         navigate({ to: search.redirect ?? "/overview" });
       } else if (mode === "signup") {
+        if (password.length < 8) {
+          throw new Error("Password must be at least 8 characters");
+        }
+        if (!fullName.trim()) {
+          throw new Error("Please enter your full name");
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { full_name: fullName },
+            emailRedirectTo: `${window.location.origin}/overview`,
+            data: { full_name: fullName.trim() },
           },
         });
         if (error) throw error;
@@ -87,7 +93,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-dvh lg:grid-cols-2">
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
           <Link to="/" className="inline-flex">
@@ -168,7 +174,7 @@ function AuthPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={mode === "signup" ? 8 : 6}
                   autoComplete={mode === "signup" ? "new-password" : "current-password"}
                 />
               </div>
