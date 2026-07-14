@@ -105,8 +105,47 @@ function OnboardingWizard() {
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
 
+  useEffect(() => {
+    (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("organization_id")
+        .eq("id", userData.user.id)
+        .maybeSingle();
+      if (profile?.organization_id) {
+        const { data: o } = await supabase
+          .from("organizations")
+          .select("id,name,industry,company_size,country,timezone")
+          .eq("id", profile.organization_id)
+          .maybeSingle();
+        if (o) {
+          setOrgId(o.id);
+          setName(o.name);
+          setIndustry(o.industry ?? "");
+          setSize(o.company_size ?? "");
+          setCountry(o.country ?? "");
+          if (o.timezone) setTimezone(o.timezone);
+        }
+      }
+    })();
+  }, []);
+
   async function createOrgIfNeeded() {
-    if (orgId) return orgId;
+    if (orgId) {
+      await supabase
+        .from("organizations")
+        .update({
+          name: name.trim(),
+          industry: industry || null,
+          company_size: size || null,
+          country: country || null,
+          timezone: timezone || null,
+        })
+        .eq("id", orgId);
+      return orgId;
+    }
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) throw new Error("Not signed in");
     const { data: org, error } = await supabase
