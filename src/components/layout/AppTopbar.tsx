@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +23,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { CommandPalette, useCommandPaletteHotkey } from "@/components/search/CommandPalette";
 
 function humanize(segment: string) {
   return segment.charAt(0).toUpperCase() + segment.slice(1);
@@ -39,6 +39,8 @@ export function AppTopbar() {
   const email = user?.email ?? "";
   const initials = (email[0] ?? "?").toUpperCase();
   const [orgName, setOrgName] = useState<string>("Workspace");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  useCommandPaletteHotkey(() => setPaletteOpen(true));
 
   useEffect(() => {
     let active = true;
@@ -98,14 +100,18 @@ export function AppTopbar() {
       </span>
 
       <div className="ml-auto flex items-center gap-1.5">
-        <div className="relative hidden md:block">
+        <button
+          type="button"
+          onClick={() => setPaletteOpen(true)}
+          className="relative hidden h-9 w-64 items-center gap-2 rounded-md border border-input bg-background pl-8 pr-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent/40 md:flex"
+          aria-label="Open search"
+        >
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search workspace…"
-            className="h-9 w-64 pl-8"
-            aria-label="Search workspace"
-          />
-        </div>
+          <span className="flex-1 truncate">Search workspace…</span>
+          <kbd className="pointer-events-none ml-auto hidden select-none rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground md:inline-block">
+            ⌘K
+          </kbd>
+        </button>
 
         <Popover>
           <PopoverTrigger asChild>
@@ -161,6 +167,7 @@ export function AppTopbar() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </header>
   );
 }

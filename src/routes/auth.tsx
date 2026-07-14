@@ -41,7 +41,7 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back");
-        navigate({ to: search.redirect ?? "/dashboard" });
+        navigate({ to: search.redirect ?? "/overview" });
       } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
@@ -80,7 +80,7 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: search.redirect ?? "/dashboard" });
+      navigate({ to: search.redirect ?? "/overview" });
     } finally {
       setLoading(false);
     }

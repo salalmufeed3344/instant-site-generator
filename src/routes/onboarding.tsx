@@ -41,7 +41,7 @@ export const Route = createFileRoute("/onboarding")({
     const org = (profile as { organizations?: { setup_completed?: boolean } | null } | null)
       ?.organizations;
     if (profile?.organization_id && org?.setup_completed) {
-      throw redirect({ to: "/dashboard" });
+      throw redirect({ to: "/overview" });
     }
   },
   component: OnboardingWizard,

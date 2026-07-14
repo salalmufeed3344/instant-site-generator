@@ -67,3 +67,23 @@
 - SSO / SAML
 - RBAC via `user_roles` + `app_role` enum
 - Billing and plan management
+
+## Phase 6 — AI Workforce Experience & Live Demo Flow ✅
+
+- New **Organization Overview** at `/overview` (now the authenticated home) with a
+  Knowledge Score hero, KPI grid, AI Workforce status cards, and recent activity
+- **Organization Health** dashboard at `/health` with AI Readiness / Knowledge
+  Coverage / Memory Health rings and per-signal coverage bars
+- **Activity Center** at `/activity` — unified filterable timeline (documents,
+  departments, policies, processes, tasks, memory)
+- **Command Palette** (`⌘K` / `Ctrl+K`) with categorized global search across
+  documents, departments, policies, processes, tasks, and memory
+- Reusable **AnalysisProgress** component with an animated 8-stage pipeline
+  (reading → understanding → departments → policies → processes → memory →
+  workforce → finalizing) — drop-in replacement for spinners
+- Reusable **TaskFlowVisual** and **ReasoningPanel** components — visual
+  workflow + collapsible transparency panel showing knowledge sources, policies,
+  departments, documents, memory references, confidence, and execution timeline
+- Redesigned sidebar with grouped navigation (Workspace / Intelligence /
+  AI Workforce / Account) and updated topbar with `⌘K` search trigger
+- New `docs/DEMO_SCRIPT.md` — recommended 3-minute walkthrough for judges
