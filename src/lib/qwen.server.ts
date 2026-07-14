@@ -4,7 +4,15 @@
 const QWEN_ENDPOINT =
   process.env.QWEN_BASE_URL ??
   "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions";
-const DEFAULT_MODEL = process.env.QWEN_MODEL ?? "qwen-plus";
+// qwen-turbo is available on the free tier for most DashScope accounts.
+// qwen-plus / qwen-max require an active paid subscription and will return
+// HTTP 403 AccessDenied.Unpurchased on accounts without one.
+const DEFAULT_MODEL = process.env.QWEN_MODEL ?? "qwen-turbo";
+// Fallback chain used when the primary model returns AccessDenied.Unpurchased.
+const FALLBACK_MODELS = (process.env.QWEN_FALLBACK_MODELS ?? "qwen-turbo,qwen-flash")
+  .split(",")
+  .map((m) => m.trim())
+  .filter(Boolean);
 const DEFAULT_TIMEOUT_MS = 60_000;
 
 export type QwenMessage = {
