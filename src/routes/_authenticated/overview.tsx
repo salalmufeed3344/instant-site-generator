@@ -38,7 +38,7 @@ function useOverviewData() {
       if (!orgId) return null;
 
       const [docs, depts, pols, procs, tasks, mems, timeline] = await Promise.all([
-        supabase.from("documents").select("id, name, created_at, status", { count: "exact" }).eq("organization_id", orgId).order("created_at", { ascending: false }).limit(5),
+        supabase.from("documents").select("id, title, created_at, upload_status", { count: "exact" }).eq("organization_id", orgId).order("created_at", { ascending: false }).limit(5),
         supabase.from("ai_departments").select("id, name, slug, status", { count: "exact" }).eq("organization_id", orgId),
         supabase.from("policies").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
         supabase.from("processes").select("id", { count: "exact", head: true }).eq("organization_id", orgId),
