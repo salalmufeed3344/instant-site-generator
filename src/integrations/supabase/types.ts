@@ -14,29 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      departments: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          organization_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "departments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string
+          file_size: number | null
           file_url: string | null
           id: string
+          mime_type: string | null
           organization_id: string
+          storage_path: string | null
           title: string
+          updated_at: string
           upload_status: string
         }
         Insert: {
           created_at?: string
+          file_size?: number | null
           file_url?: string | null
           id?: string
+          mime_type?: string | null
           organization_id: string
+          storage_path?: string | null
           title: string
+          updated_at?: string
           upload_status?: string
         }
         Update: {
           created_at?: string
+          file_size?: number | null
           file_url?: string | null
           id?: string
+          mime_type?: string | null
           organization_id?: string
+          storage_path?: string | null
           title?: string
+          updated_at?: string
           upload_status?: string
         }
         Relationships: [
@@ -49,27 +96,180 @@ export type Database = {
           },
         ]
       }
+      interview_answers: {
+        Row: {
+          answer: string | null
+          created_at: string
+          id: string
+          organization_id: string
+          question: string
+          question_key: string
+          updated_at: string
+        }
+        Insert: {
+          answer?: string | null
+          created_at?: string
+          id?: string
+          organization_id: string
+          question: string
+          question_key: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string | null
+          created_at?: string
+          id?: string
+          organization_id?: string
+          question?: string
+          question_key?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interview_answers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_sources: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          metadata: Json
+          organization_id: string
+          reference_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          organization_id: string
+          reference_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          organization_id?: string
+          reference_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_sources_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_templates: {
+        Row: {
+          applied_at: string
+          created_at: string
+          id: string
+          organization_id: string
+          template_key: string
+          template_name: string
+          updated_at: string
+        }
+        Insert: {
+          applied_at?: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          template_key: string
+          template_name: string
+          updated_at?: string
+        }
+        Update: {
+          applied_at?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          template_key?: string
+          template_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           company_size: string | null
+          contact_email: string | null
+          country: string | null
           created_at: string
+          description: string | null
           id: string
           industry: string | null
+          logo_url: string | null
+          mission: string | null
           name: string
+          setup_completed: boolean
+          setup_method: string | null
+          timezone: string | null
+          updated_at: string
+          vision: string | null
+          website: string | null
         }
         Insert: {
           company_size?: string | null
+          contact_email?: string | null
+          country?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           industry?: string | null
+          logo_url?: string | null
+          mission?: string | null
           name: string
+          setup_completed?: boolean
+          setup_method?: string | null
+          timezone?: string | null
+          updated_at?: string
+          vision?: string | null
+          website?: string | null
         }
         Update: {
           company_size?: string | null
+          contact_email?: string | null
+          country?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           industry?: string | null
+          logo_url?: string | null
+          mission?: string | null
           name?: string
+          setup_completed?: boolean
+          setup_method?: string | null
+          timezone?: string | null
+          updated_at?: string
+          vision?: string | null
+          website?: string | null
         }
         Relationships: []
       }
