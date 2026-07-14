@@ -194,25 +194,50 @@ function OnboardingWizard() {
       );
       setStep(2);
     } catch (e) {
-      const raw = e instanceof Error ? e.message : String(e);
+      const err = e as {
+        message?: string;
+        details?: string;
+        hint?: string;
+        code?: string;
+      };
+      const parts = [err?.message, err?.details, err?.hint].filter(
+        (v): v is string => typeof v === "string" && v.trim().length > 0,
+      );
+      const raw =
+        parts.length > 0
+          ? parts.join(" — ")
+          : e instanceof Error
+            ? e.message
+            : "Unknown error";
       const lower = raw.toLowerCase();
+      const code = err?.code ?? "";
       let title = "Couldn't create workspace";
       let description = raw || "Please try again in a moment.";
-      if (lower.includes("not signed in") || lower.includes("jwt")) {
+      if (lower.includes("not signed in") || lower.includes("jwt") || code === "PGRST301") {
         title = "You're signed out";
         description = "Sign in again and retry — your progress is safe.";
-      } else if (lower.includes("row-level security") || lower.includes("permission")) {
+      } else if (
+        lower.includes("row-level security") ||
+        lower.includes("permission") ||
+        code === "42501"
+      ) {
         title = "Permission denied";
         description =
-          "Your account can't create a workspace right now. Refresh and sign in again, or contact support if this persists.";
-      } else if (lower.includes("duplicate") || lower.includes("unique")) {
+          "Your account can't create a workspace right now. Refresh the page, sign in again, and try once more.";
+      } else if (code === "23505" || lower.includes("duplicate") || lower.includes("unique")) {
         title = "Name already in use";
         description = "Pick a different organization name and try again.";
-      } else if (lower.includes("network") || lower.includes("fetch")) {
+      } else if (code === "42703" || lower.includes("does not exist")) {
+        title = "Workspace schema out of date";
+        description =
+          "Reload the page to pick up the latest form fields, then try again. If it persists, contact support.";
+      } else if (lower.includes("network") || lower.includes("failed to fetch")) {
         title = "Network issue";
         description = "Check your connection and try again.";
       }
+      console.error("[onboarding] createOrg failed", err);
       toast.error(title, { id: pending, description });
+
     } finally {
       setSaving(false);
     }
