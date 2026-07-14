@@ -78,7 +78,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
     const term = `%${q.trim()}%`;
     (async () => {
       const [docs, depts, pols, procs, tasks, mems] = await Promise.all([
-        supabase.from("documents").select("id, name").ilike("name", term).limit(5),
+        supabase.from("documents").select("id, title").ilike("title", term).limit(5),
         supabase.from("ai_departments").select("id, slug, name").ilike("name", term).limit(5),
         supabase.from("policies").select("id, title").ilike("title", term).limit(5),
         supabase.from("processes").select("id, name").ilike("name", term).limit(5),
@@ -87,7 +87,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
       ]);
       if (cancelled) return;
       const out: SearchRow[] = [];
-      docs.data?.forEach((d: any) => out.push({ kind: "document", label: d.name, to: `/documents/${d.id}` }));
+      docs.data?.forEach((d: any) => out.push({ kind: "document", label: d.title, to: `/documents/${d.id}` }));
       depts.data?.forEach((d: any) => out.push({ kind: "department", label: d.name, to: `/ai-departments/${d.slug}` }));
       pols.data?.forEach((p: any) => out.push({ kind: "policy", label: p.title, to: `/knowledge` }));
       procs.data?.forEach((p: any) => out.push({ kind: "process", label: p.name, to: `/knowledge` }));

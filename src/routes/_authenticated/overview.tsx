@@ -200,9 +200,9 @@ function OverviewPage() {
                 <li key={d.id} className="flex items-center gap-3 px-4 py-3">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <Link to="/documents/$documentId" params={{ documentId: d.id }} className="flex-1 truncate text-sm hover:underline">
-                    {d.name}
+                    {d.title}
                   </Link>
-                  <Badge variant="outline" className="capitalize">{d.status ?? "ready"}</Badge>
+                  <Badge variant="outline" className="capitalize">{d.upload_status ?? "ready"}</Badge>
                 </li>
               ))}
             </ul>
